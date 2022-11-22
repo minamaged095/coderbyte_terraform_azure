@@ -158,5 +158,7 @@ resource "local_file" "private_key" {
   filename        = "key.pem"
   file_permission = "0600"
 }
-
+output "vm_ip" {
+  value = azurerm_public_ip.my_terraform_public_ip.ip_address
+}
 
