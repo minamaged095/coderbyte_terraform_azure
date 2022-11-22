@@ -52,7 +52,7 @@ resource "azurerm_public_ip" "my_terraform_public_ip" {
   name                = "myPublicIP"
   location            = azurerm_resource_group.rg.location
   resource_group_name = azurerm_resource_group.rg.name
-  allocation_method   = "Dynamic"
+  allocation_method   = "Static"
 }
 
 # Create Network Security Group and rule
@@ -83,7 +83,7 @@ resource "azurerm_network_interface" "my_terraform_nic" {
   ip_configuration {
     name                          = "my_nic_configuration"
     subnet_id                     = azurerm_subnet.my_terraform_subnet.id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
     public_ip_address_id          = azurerm_public_ip.my_terraform_public_ip.id
   }
 }
@@ -99,7 +99,7 @@ resource "azurerm_network_interface_security_group_association" "example" {
 # Create (and display) an SSH key
 resource "tls_private_key" "example_ssh" {
   algorithm = "RSA"
-  rsa_bits  = 4096
+  rsa_bits  = 2048
 }
 
 # Create virtual machine
@@ -152,4 +152,11 @@ SETTINGS
     environment = "Production"
   }
 }
+
+resource "local_file" "private_key" {
+  content         = tls_private_key.example_ssh.private_key_pem
+  filename        = "key.pem"
+  file_permission = "0600"
+}
+
 
